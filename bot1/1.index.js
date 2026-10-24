@@ -1,3 +1,11 @@
+const http = require('http');
+
+// Server dummy supaya Render tau app kita tetep 'live'
+http.createServer((req, res) => {
+    res.write('NexusBot is running!');
+    res.end();
+}).listen(process.env.PORT || 3000);
+
 require('dotenv').config();
 const { 
     Client, 
