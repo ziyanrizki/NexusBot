@@ -249,7 +249,7 @@ const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN);
 // =========================================================
 // 🚀 EVENT: CLIENT READY (SAAT BOT BERHASIL ONLINE)
 // =========================================================
-client.once('clientReady', async () => {
+client.once('ready', async () => {
     console.log(`🤖 Bot berhasil login sebagai ${client.user.tag}!`);
 
     try {
