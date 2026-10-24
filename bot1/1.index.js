@@ -1,11 +1,3 @@
-const http = require('http');
-
-// Server dummy supaya Render tau app kita tetep 'live'
-http.createServer((req, res) => {
-    res.write('NexusBot is running!');
-    res.end();
-}).listen(process.env.PORT || 3000);
-
 require('dotenv').config();
 const { 
     Client, 
@@ -42,12 +34,15 @@ const client = new Client({
 });
 
 // =========================================================
-// 🖼️ HELPER MEME JUMATAN (OTOMATIS BACA FOLDER ASSETS)
+// 🖼️ HELPER MEME JUMATAN (SAFE CHECK FOLDER ASSETS)
 // =========================================================
 function buildJumatanMessage() {
     const assetsPath = path.join(__dirname, 'assets');
     
-    // Baca semua nama file di dalam folder assets secara otomatis
+    if (!fs.existsSync(assetsPath)) {
+        throw new Error('Folder assets tidak ditemukan!');
+    }
+
     const files = fs.readdirSync(assetsPath).filter(file => 
         /\.(jpg|jpeg|png|gif|webp)$/i.test(file)
     );
@@ -56,7 +51,6 @@ function buildJumatanMessage() {
         throw new Error('Folder assets kosong atau tidak ada file gambar!');
     }
 
-    // Ambil 1 file gambar secara acak dari folder
     const randomFileName = files[Math.floor(Math.random() * files.length)];
     const filePath = path.join(assetsPath, randomFileName);
     const attachment = new AttachmentBuilder(filePath, { name: randomFileName });
@@ -247,7 +241,7 @@ const commands = [
 const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN);
 
 // =========================================================
-// 🚀 EVENT: CLIENT READY (SAAT BOT BERHASIL ONLINE)
+// 🚀 EVENT: READY (DIPERBAIKI DARI clientReady JADI ready)
 // =========================================================
 client.once('ready', async () => {
     console.log(`🤖 Bot berhasil login sebagai ${client.user.tag}!`);
@@ -416,5 +410,8 @@ client.on('interactionCreate', async (interaction) => {
     }
 });
 
-// Login Bot ke Gateway Discord
-client.login(process.env.DISCORD_TOKEN);
+// Login Bot ke Gateway Discord dengan penangkapan error
+console.log('🔑 Memulai proses login NexusBot...');
+client.login(process.env.DISCORD_TOKEN).catch(err => {
+    console.error('❌ GAGAL LOGIN KE DISCORD:', err.message);
+});
