@@ -39,6 +39,7 @@ const client = new Client({
 function buildJumatanMessage() {
     const assetsPath = path.join(__dirname, 'assets');
     
+    // Safety check apakah folder assets ada
     if (!fs.existsSync(assetsPath)) {
         throw new Error('Folder assets tidak ditemukan!');
     }
@@ -410,7 +411,7 @@ client.on('interactionCreate', async (interaction) => {
     }
 });
 
-// Login Bot ke Gateway Discord dengan penangkapan error
+// Login Bot ke Gateway Discord dengan Catch Error
 console.log('🔑 Memulai proses login NexusBot...');
 client.login(process.env.DISCORD_TOKEN).catch(err => {
     console.error('❌ GAGAL LOGIN KE DISCORD:', err.message);
